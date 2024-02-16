@@ -12,17 +12,20 @@ def alumnos():
     nombre=""
     apa=""
     correo=""
+    ama=""
     alum_form=forms.UserForm(request.form)
-    if request.method=='POST':
+    if request.method=='POST' and alum_form.validate():
         nombre=alum_form.nombre.data
         apa=alum_form.apaterno.data
+        ama=alum_form.amaterno.data
         correo=alum_form.email.data
         print("nombre :{}".format(nombre))
         print("apaterno :{}".format(apa))
-        print("correo :{}".format(correo))
+        print("amaterno :{}".format(ama))
+
         
         
-    return render_template("alumnos.html",form=alum_form,nom=nombre,apapaterno=apa,email=correo)
+    return render_template("alumnos.html",form=alum_form,nom=nombre,apapaterno=apa,ama=ama)
 
 @app.route("/maestros")
 def maestros():
