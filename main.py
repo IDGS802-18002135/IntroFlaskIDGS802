@@ -1,14 +1,39 @@
-from flask import Flask, request,render_template
+from flask import Flask, request,render_template,Response
 import forms
+from flask_wtf.csrf import CSRFProtect
+from flask import g 
+
+from flask import flash
+
 app=Flask(__name__)
+app.secret_key='esta es la clave secreta'
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'),404
 
 @app.route("/")
 def index():
     return render_template("index.html")
 
+@app.before_request
+def before_request():
+    g.prueba='hola'
+    print('antes 1')
+
+@app.after_request()
+def after_request(response):
+    print('despues de ruta 3')
+    return response
+
+
+
 @app.route("/alumnos",methods=["GET","POST"])
 
 def alumnos():
+    print('dentro de 2')
+    valor=g.prueba
+    print('el dato es:{}'.format(valor))
     nombre=""
     apa=""
     correo=""
@@ -19,6 +44,8 @@ def alumnos():
         apa=alum_form.apaterno.data
         ama=alum_form.amaterno.data
         correo=alum_form.email.data
+        mensaje='Bienvenido: {}'.format(nombre)
+        flash(mensaje)
         print("nombre :{}".format(nombre))
         print("apaterno :{}".format(apa))
         print("amaterno :{}".format(ama))
@@ -26,6 +53,9 @@ def alumnos():
         
         
     return render_template("alumnos.html",form=alum_form,nom=nombre,apapaterno=apa,ama=ama)
+
+
+
 
 @app.route("/maestros")
 def maestros():
